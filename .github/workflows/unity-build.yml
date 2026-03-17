@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    name: Build APK
     runs-on: ubuntu-latest
 
     steps:
@@ -20,6 +19,7 @@ jobs:
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
+          unityVersion: 6000.3.10f1   # 👈 CHANGE THIS
           targetPlatform: Android
 
       - name: Upload APK
