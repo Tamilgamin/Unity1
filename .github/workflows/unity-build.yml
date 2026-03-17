@@ -1,14 +1,45 @@
-name: Unity Build
+name: Unity Android Build
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
+    name: Build APK
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
+    steps:
+      # Checkout project
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Cache Library (speed up builds)
+      - name: Cache Library
+        uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ runner.os }}
+          restore-keys: |
+            Library-
+
+      # Build using Unity
       - name: Build project
         uses: game-ci/unity-builder@v3
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           targetPlatform: Android
+          buildName: MyGame
+          buildsPath: build
+
+      # Upload APK as artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Unity-Android-Build
+          path: build
+        
